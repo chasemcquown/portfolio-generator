@@ -1,14 +1,88 @@
 const inquirer = require('inquirer');
 
-inquirer
-  .prompt([
-    {
-      type: 'input',
-      name: 'name',
-      message: 'What is your name?'
+const promptUser = () => {
+    return inquirer.prompt([
+      {
+        type: 'input',
+        name: 'name',
+        message: 'What is your name?'
+      },
+      {
+        type: 'input',
+        name: 'github',
+        message: 'Enter your GitHub Username',
+      },
+      {
+        type: 'input',
+        name: 'about',
+        message: 'Provide some information about yourself:'
+      }
+    ]);
+};
+
+const promptProject = portfolioData => {
+    // If there's no 'projects' array property, create one. In other words, you only want this to happen on the first pass, so use conditional staement to make sure !portfolioData.projects doesn't exist yet
+    if (!portfolioData.projects) {
+        portfolioData.projects = [];
     }
-  ])
-  .then(answers => console.log(answers));
+    console.log(`
+  =================
+  Add a New Project
+  =================
+  `);
+    return inquirer.prompt([
+      {
+        type: 'input',
+        name: 'name',
+        message: 'What is the name of your project?'
+      },
+      {
+        type: 'input',
+        name: 'description',
+        message: 'Provide a description of the project (Required)'
+      },
+      {
+        type: 'checkbox',
+        name: 'languages',
+        message: 'What did you build this project with? (Check all that apply)',
+        choices: ['JavaScript', 'HTML', 'CSS', 'ES6', 'jQuery', 'Bootstrap', 'Node']
+      },
+      {
+        type: 'input',
+        name: 'link',
+        message: 'Enter the GitHub link to your project. (Required)'
+      },
+      {
+        type: 'confirm',
+        name: 'feature',
+        message: 'Would you like to feature this project?',
+        default: false
+      },
+      {
+        type: 'confirm',
+        name: 'confirmAddProject',
+        message: 'Would you like to enter another project?',
+        default: false
+      }
+    ])
+    // once data has been collected above, add the project data to the projects array
+    .then(projectData => {
+        portfolioData.projects.push(projectData);
+        // add a condition that will call the promptProject(portfolioData) function when confirmAddProject evaluates to true. In this condition, we're evaluating the user response to whether they wish to add more projects. This response was captured in the answer object, projectData, in the property confirmAddProject. If the user wishes to add more projects, then this condition will evaluate to true and call the promptProject(portfolioData) function.
+        if (projectData.confirmAddProject) {
+            return promptProject(portfolioData);
+        // If the user decides not to add more projects, then the condition will evaluate to false and trigger the following statement. We have to return the portfolioData in the else statement explicitly so that the object is returned. This is a critical step to retrieving the user's answer and building an HTML template    
+        } else {
+            return portfolioData;
+        }
+    });
+  };
+  
+promptUser()
+  .then(promptProject)
+  .then(portfolioData => {
+    console.log(portfolioData);
+});
 
 
 // BELOW IS THE REAFCTORED AND CLEANED UP CODE
