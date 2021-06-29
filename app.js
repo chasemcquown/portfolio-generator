@@ -1,18 +1,29 @@
+const inquirer = require('inquirer');
+
+inquirer
+  .prompt([
+    {
+      type: 'input',
+      name: 'name',
+      message: 'What is your name?'
+    }
+  ])
+  .then(answers => console.log(answers));
+
+
 // BELOW IS THE REAFCTORED AND CLEANED UP CODE
-const fs = require('fs');
+//const fs = require('fs');
 
 // With this statement, the object in the module.exports assignment will be reassigned to the generatePage variable in the app.js file
-const generatePage = require('./src/page-template.js');
+//const generatePage = require('./src/page-template.js');
 
-const profileDataArgs = process.argv.slice(2);
+//const pageHTML = generatePage(name, github);
 
-const [name, github] = profileDataArgs;
+//fs.writeFile('./index.html', pageHTML, err => {
+  //if (err) throw new Error(err);
 
-fs.writeFile('./index.html', generatePage(name, github), err => {
-  if (err) throw new Error(err);
-
-  console.log('Portfolio complete! Check out index.html to see the output!');
-});
+  //console.log('Portfolio complete! Check out index.html to see the output!');
+//});
 
 
 // BELOW IS THE CODE FROM EARLIER IN THE MODULE WHICH CONTAINS COMMENTS FOR EXPLANATION
